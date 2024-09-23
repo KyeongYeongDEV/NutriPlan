@@ -1,3 +1,3 @@
-export default interface DietPlanReqDTO {
+export default interface DietPlanRequestDTO {
     date : string;
 };

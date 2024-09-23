@@ -15,6 +15,7 @@ export default class Repository {
             connection = await this.pool.getConnection();
             
             const [result, fields] = await connection.query(query, values);
+            
             return result;
         } catch (error) {
             console.error(`Error executing query :  ${query}`, error);

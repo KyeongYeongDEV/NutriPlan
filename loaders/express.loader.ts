@@ -2,7 +2,6 @@ import { Application, json, urlencoded } from "express";
 import router from '../api/index.api';
 //import errorMiddleware from "../api/middlewares/error.middleware";
 import cors from "cors";
-import path from "path";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -14,6 +13,7 @@ export default async ({ app }: { app: Application }) => {
     }));
     app.use(json());
     app.use(urlencoded({ extended: false }));
+    
     app.use('/node', router());
 
     app.get('/', (req, res) => {

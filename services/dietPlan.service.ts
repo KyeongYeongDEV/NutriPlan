@@ -1,10 +1,10 @@
 import { Inject, Service } from "typedi";
-import { DietPlanResponseDTO } from "../dto/response/dietPlan";
+import { DeleteDietPlanResponseDTO, DietPlanResponseDTO } from "../dto/response/dietPlan";
 import DietPlanDTO from "../dto/response/dietPlan";
 
 
 import DietPlanRepository from "../repositorys/dietPlan.repository";
-import FoodInfoDTO, { FoodInfoResponseDTO } from "../dto/response/foodInfo";
+import DietPlanRequestDTO from "../dto/request/dietPlan";
 
 @Service()
 export default class DietPlanService {
@@ -12,19 +12,8 @@ export default class DietPlanService {
         @Inject( () => DietPlanRepository) private readonly  dietPlanRepository :DietPlanRepository
     ){}
 
-    async findFoodInfoById( { id } : { id : number }) : Promise<FoodInfoResponseDTO> {
-        const foodInfo : FoodInfoDTO = await this.dietPlanRepository.findFoodInfoById({id});
-
-        const foodInfoResponseDTO : FoodInfoResponseDTO = {
-            statusCode : 200,
-            message : '성공적으로 조회했습니다',
-            data : foodInfo
-        }
-
-        return foodInfoResponseDTO;
-    }
-
-    async findFoodInfoByDate( { date } : { date : string }) : Promise<DietPlanResponseDTO> {
+    async findDietPlanByDate( { date } : { date : DietPlanRequestDTO }) : Promise<DietPlanResponseDTO> {
+        console.log(date)
         const dietPlans : DietPlanDTO[] = await this.dietPlanRepository.findDietPlanByDate({date});
 
         const dietPlanResponseDTO : DietPlanResponseDTO = {
@@ -33,5 +22,14 @@ export default class DietPlanService {
             data : dietPlans
         }
         return dietPlanResponseDTO;
+    }
+
+    async deleteDietPlanById( { id } : { id : number }) : Promise<DeleteDietPlanResponseDTO>{
+        await this.dietPlanRepository.deleteDietPlanById({ id });
+
+        return {
+            message : '삭제가 완료되었습니다',
+            statusCode : 200,
+        }
     }
 }

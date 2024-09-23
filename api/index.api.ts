@@ -1,12 +1,10 @@
 import Router from "express";
-// import auth from "./routes/auth.route";
-// import chat from "./routes/chat.route";
+import dietPlan from "./routes/dietPlan.route";
 
 export default () => {
     const router= Router();
     
-    // auth({ app : router });
-    // chat({ app : router });
+    dietPlan({ app : router});
 
     return router;
 }

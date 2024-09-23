@@ -9,3 +9,4 @@ export default interface DietPlanDTO {
 }
 
 export interface DietPlanResponseDTO extends CommonResponseDTO<DietPlanDTO[]>{}
+export interface DeleteDietPlanResponseDTO extends CommonResponseDTO<null>{}

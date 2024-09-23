@@ -1,6 +1,10 @@
 import { Inject, Service } from "typedi";
-import DietPlanResDTO from "../dto/response/dietPlan";
+import { DietPlanResponseDTO } from "../dto/response/dietPlan";
+import DietPlanDTO from "../dto/response/dietPlan";
+
+
 import DietPlanRepository from "../repositorys/dietPlan.repository";
+import FoodInfoDTO, { FoodInfoResponseDTO } from "../dto/response/foodInfo";
 
 @Service()
 export default class DietPlanService {
@@ -8,12 +12,26 @@ export default class DietPlanService {
         @Inject( () => DietPlanRepository) private readonly  dietPlanRepository :DietPlanRepository
     ){}
 
-    async findFoodInfoByDate( { date } : { date : string }) : Promise<DietPlanResDTO[]> {
+    async findFoodInfoById( { id } : { id : number }) : Promise<FoodInfoResponseDTO> {
+        const foodInfo : FoodInfoDTO = await this.dietPlanRepository.findFoodInfoById({id});
 
-        try {
-            const dietPlans : DietPlanResDTO[] = await this.dietPlanRepository.findFoodInfoById()
-        } catch (error) {
-            console.error(error);
+        const foodInfoResponseDTO : FoodInfoResponseDTO = {
+            statusCode : 200,
+            message : '성공적으로 조회했습니다',
+            data : foodInfo
         }
+
+        return foodInfoResponseDTO;
+    }
+
+    async findFoodInfoByDate( { date } : { date : string }) : Promise<DietPlanResponseDTO> {
+        const dietPlans : DietPlanDTO[] = await this.dietPlanRepository.findDietPlanByDate({date});
+
+        const dietPlanResponseDTO : DietPlanResponseDTO = {
+            statusCode : 200,
+            message : '성공적으로 조회했습니다',
+            data : dietPlans
+        }
+        return dietPlanResponseDTO;
     }
 }

@@ -1,0 +1,42 @@
+{
+    "swagger": "2.0",
+    "info": {
+    "title": "My API",
+    "description": "Description",
+    "version": "1.0.0"
+    },
+    "host": "localhost:8000/api",
+    "basePath": "/",
+    "schemes": [
+    "http"
+    ],
+    "paths": {
+    "/auth/join": {
+        "post": {
+        "description": "",
+        "responses": {
+            "200": {
+            "description": "OK"
+            },
+            "404": {
+            "description": "Not Found"
+            }
+        }
+        }
+    },
+    "/auth/login": {
+        "post": {
+        "description": "",
+        "responses": {
+            "default": {
+            "description": ""
+            }
+        }
+        }
+    }
+    },
+    "x-cors": {
+    "enabled": true,
+    "description": "Cross-Origin Resource Sharing (CORS) is supported for this API."
+    }
+}

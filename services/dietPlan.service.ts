@@ -10,10 +10,9 @@ import DietPlanRequestDTO from "../dto/request/dietPlan";
 export default class DietPlanService {
     constructor(
         @Inject( () => DietPlanRepository) private readonly  dietPlanRepository :DietPlanRepository
-    ){}
+    ){} 
 
     async findDietPlanByDate( { date } : { date : DietPlanRequestDTO }) : Promise<DietPlanResponseDTO> {
-        console.log(date)
         const dietPlans : DietPlanDTO[] = await this.dietPlanRepository.findDietPlanByDate({date});
 
         const dietPlanResponseDTO : DietPlanResponseDTO = {

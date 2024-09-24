@@ -7,6 +7,6 @@ export default ({ app } : { app : Router}) => {
 
     app.use('/dietPlan', route);
 
-    route.get('/', Container.get(DietPlanController).findDietPlanByDate.bind(DietPlanController));
+    route.get('/:u_id', Container.get(DietPlanController).findDietPlanByDate.bind(DietPlanController));
     route.delete('/',Container.get(DietPlanController).deleteDietPlanById.bind(DietPlanController))
 }

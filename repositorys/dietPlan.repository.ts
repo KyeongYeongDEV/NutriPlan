@@ -10,9 +10,9 @@ export default class DietPlanRepository extends Repository{
         super(pool);
     }
     //[ ] 조회 삭제
-    async findDietPlanByDate( { date } : { date : DietPlanRequestDTO }) : Promise<DietplanDTO[]> {
-        const query : string = "SELECT * FROM userDietplan WHERE date = ?";
-        const result : DietplanDTO[]  = await this.executeQuery(query, [date.date]);
+    async findDietPlanByDateAndUid( { date, u_id} : { date : DietPlanRequestDTO, u_id : number }) : Promise<DietplanDTO[]> {
+        const query : string = "SELECT * FROM userDietplan WHERE date = ? AND user_id = ?";
+        const result : DietplanDTO[]  = await this.executeQuery(query, [date.date, u_id]);
         
 
         return result;

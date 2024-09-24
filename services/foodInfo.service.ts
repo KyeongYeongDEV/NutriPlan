@@ -1,28 +1,33 @@
-// import { Request, Response ,NextFunction } from "express";
-// import { Inject, Service } from "typedi";
-// import FoodInfoRequestDTO from "../../dto/request/foodInfo";
-// import { FoodInfoResponseDTO } from "../../dto/response/foodInfo";
-// import DietPlanService from "../../services/dietPlan.service";
+import { Inject, Service } from "typedi";
+import FoodInfoDTO, { DeleteFoodInfoResponseDTO, FoodInfoResponseDTO } from "../dto/response/foodInfo";
+import FoodInfoRepository from "../repositorys/foodInfo.repository";
 
-// @Service()
-// export class  {
-//     constructor(
-//         @Inject( () => DietPlanService ) private readonly dietPlanService : DietPlanService
-//     ){}
 
-//     findFoodInfoById = async (req : Request, res : Response, next : NextFunction) => {
-//         try {
-//             //TODO: unknown 없애도록 수정할 것
-//             const id = req.body as FoodInfoRequestDTO ;
+@Service()
+export class FoodInfoService {
+    constructor(
+        @Inject( () => FoodInfoRepository) private readonly foodInfoRepository : FoodInfoRepository
+    ){}
 
-//             if(id === undefined){
-//                 throw new Error("data is undefinded");
-//             }
-//             const foodInfoResponseDTO : FoodInfoResponseDTO = await this.dietPlanService.findFoodInfoById({id});
+    async findFoodInfoById({ id } : { id : number }) : Promise<FoodInfoResponseDTO> {
+        const foodInfo : FoodInfoDTO = await this.foodInfoRepository.findFoodInfoById({id});
 
-//             return res.status(200).json(foodInfoResponseDTO);
-//         } catch (error) {
-//             return next(error);
-//         }
-//     }
-// }
+        const foodInfoResponseDTO : FoodInfoResponseDTO = {
+            statusCode : 200,
+            message : '성공적으로 조회했습니다',
+            data : foodInfo
+        }
+
+        return foodInfoResponseDTO;
+    }
+    
+
+    async deleteFoodInfoById({ id } : { id : number }) : Promise<DeleteFoodInfoResponseDTO> {
+        await this.foodInfoRepository.deleteFoodInfoById({id});
+        
+        return {
+            message : '삭제가 완료되었습니다',
+            statusCode : 200,
+        }
+    }
+}

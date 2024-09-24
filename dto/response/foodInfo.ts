@@ -12,3 +12,4 @@ export default interface FoodInfoDTO {
 
 
 export interface FoodInfoResponseDTO extends CommonResponseDTO<FoodInfoDTO>{}
+export interface DeleteFoodInfoResponseDTO extends CommonResponseDTO<null>{};

@@ -12,8 +12,8 @@ export default class DietPlanService {
         @Inject( () => DietPlanRepository) private readonly  dietPlanRepository :DietPlanRepository
     ){} 
 
-    async findDietPlanByDate( { date } : { date : DietPlanRequestDTO }) : Promise<DietPlanResponseDTO> {
-        const dietPlans : DietPlanDTO[] = await this.dietPlanRepository.findDietPlanByDate({date});
+    async findDietPlanByDateAndUid( { date, u_id } : { date : DietPlanRequestDTO, u_id : number }) : Promise<DietPlanResponseDTO> {
+        const dietPlans : DietPlanDTO[] = await this.dietPlanRepository.findDietPlanByDateAndUid({date, u_id});
 
         const dietPlanResponseDTO : DietPlanResponseDTO = {
             statusCode : 200,

@@ -1,7 +1,7 @@
 import { Inject, Service } from "typedi";
 import Repository from "./index.repository";
 import mysql from 'mysql2/promise'
-import FoodInfoResDTO from "../dto/response/foodInfo";
+import FoodInfoDTO from "../dto/response/foodInfo";
 
 @Service()
 export default class FoodInfoRepository extends Repository{
@@ -9,16 +9,15 @@ export default class FoodInfoRepository extends Repository{
         super(pool);
     }
     //[ ] CRUD
-    async findFoodInfoById({ id } : { id : number }) : Promise<FoodInfoResDTO> {
+    async findFoodInfoById({ f_id } : { f_id : number }) : Promise<FoodInfoDTO> {
         const query : string = 'SELECT * FROM foodInfo WHERE id = ?';
-        const result : FoodInfoResDTO= await this.executeQuery(query, [id]);
-
-        return result;
+        const result : FoodInfoDTO[]= await this.executeQuery(query, [f_id]);
+        return result[0];
     }
 
-    async deleteFoodInfoById( { id } : { id : number }) {
-        const query = 'DELETE FROM foodInfo WHERE = ?';
+    async deleteFoodInfoById( { f_id } : { f_id : number }) {
+        const query = 'DELETE FROM foodInfo WHERE id = ?';
         
-        await this.executeQuery(query, [id]);
+        await this.executeQuery(query, [f_id]);
     }
 }

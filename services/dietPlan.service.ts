@@ -1,10 +1,7 @@
 import { Inject, Service } from "typedi";
 import { DeleteDietPlanResponseDTO, DietPlanResponseDTO } from "../dto/response/dietPlan";
 import DietPlanDTO from "../dto/response/dietPlan";
-
-
 import DietPlanRepository from "../repositorys/dietPlan.repository";
-import DietPlanRequestDTO from "../dto/request/dietPlan";
 
 @Service()
 export default class DietPlanService {
@@ -12,8 +9,10 @@ export default class DietPlanService {
         @Inject( () => DietPlanRepository) private readonly  dietPlanRepository :DietPlanRepository
     ){} 
 
-    async findDietPlanByDateAndUid( { date, u_id } : { date : DietPlanRequestDTO, u_id : number }) : Promise<DietPlanResponseDTO> {
+    async findDietPlanByDateAndUid( { date, u_id } : { date : string, u_id : number }) : Promise<DietPlanResponseDTO> {
         const dietPlans : DietPlanDTO[] = await this.dietPlanRepository.findDietPlanByDateAndUid({date, u_id});
+
+        //TODO : 조건문 사용해 값을 못 받아온 경우 처리하기
 
         const dietPlanResponseDTO : DietPlanResponseDTO = {
             statusCode : 200,

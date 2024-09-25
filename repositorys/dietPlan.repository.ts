@@ -2,7 +2,6 @@ import { Inject, Service } from "typedi";
 import Repository from "./index.repository";
 import mysql from 'mysql2/promise'
 import DietplanDTO from "../dto/response/dietPlan";
-import DietPlanRequestDTO from "../dto/request/dietPlan";
 
 @Service()
 export default class DietPlanRepository extends Repository{
@@ -10,11 +9,10 @@ export default class DietPlanRepository extends Repository{
         super(pool);
     }
     //[ ] 조회 삭제
-    async findDietPlanByDateAndUid( { date, u_id} : { date : DietPlanRequestDTO, u_id : number }) : Promise<DietplanDTO[]> {
+    async findDietPlanByDateAndUid( { date, u_id} : { date : string, u_id : number }) : Promise<DietplanDTO[]> {
         const query : string = "SELECT * FROM userDietplan WHERE date = ? AND user_id = ?";
-        const result : DietplanDTO[]  = await this.executeQuery(query, [date.date, u_id]);
+        const result : DietplanDTO[]  = await this.executeQuery(query, [date, u_id]);
         
-
         return result;
     }
 

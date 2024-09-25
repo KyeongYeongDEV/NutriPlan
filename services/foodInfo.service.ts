@@ -9,8 +9,8 @@ export class FoodInfoService {
         @Inject( () => FoodInfoRepository) private readonly foodInfoRepository : FoodInfoRepository
     ){}
 
-    async findFoodInfoById({ id } : { id : number }) : Promise<FoodInfoResponseDTO> {
-        const foodInfo : FoodInfoDTO = await this.foodInfoRepository.findFoodInfoById({id});
+    async findFoodInfoById({ f_id } : { f_id : number }) : Promise<FoodInfoResponseDTO> {
+        const foodInfo : FoodInfoDTO = await this.foodInfoRepository.findFoodInfoById({f_id});
 
         const foodInfoResponseDTO : FoodInfoResponseDTO = {
             statusCode : 200,
@@ -22,8 +22,8 @@ export class FoodInfoService {
     }
     
 
-    async deleteFoodInfoById({ id } : { id : number }) : Promise<DeleteFoodInfoResponseDTO> {
-        await this.foodInfoRepository.deleteFoodInfoById({id});
+    async deleteFoodInfoById({ f_id } : { f_id : number }) : Promise<DeleteFoodInfoResponseDTO> {
+        await this.foodInfoRepository.deleteFoodInfoById({f_id});
         
         return {
             message : '삭제가 완료되었습니다',

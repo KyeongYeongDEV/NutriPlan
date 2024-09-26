@@ -5,4 +5,3 @@ export default interface UserDTO {
     age : number;
     bmr : number;
 }
-

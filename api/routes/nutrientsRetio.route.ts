@@ -7,5 +7,6 @@ export default ({ app } : { app : Router }) => {
 
     app.use('/nutrientsRetio', route);
 
-    route.get("/:u_id", Container.get(NutrientsRetioController).calculateMacronutrientRatioForDay.bind(NutrientsRetioController));
+    route.get("/:u_id", Container.get(NutrientsRetioController).calculateMacronutrientRatioForDay.bind(NutrientsRetioController));route.get("/:u_id", Container.get(NutrientsRetioController).calculateMacronutrientRatioForDay.bind(NutrientsRetioController));
+    route.get("/evaluate/:u_id", Container.get(NutrientsRetioController).evaluateMacronutrientIntakeForDay.bind(NutrientsRetioController));
 }

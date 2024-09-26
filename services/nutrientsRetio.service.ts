@@ -7,6 +7,7 @@ import DietplanDTO from "../dto/response/dietPlan";
 import { EachKcal, MacronutrientRatio, DailyMacronutrientSummary } from "../types/nutrient.type";
 import UserRepository from "../repositorys/user.repository";
 import UserDTO from "../dto/response/user";
+import DietPlanRequestDTO from "../dto/request/dietPlan";
 
 @Service()
 export class NutrientsRetioServie {
@@ -83,6 +84,7 @@ export class NutrientsRetioServie {
         
         const tdee : number =  userBmr * 1.375; // 활동칼로리 - 가벼운 운동(주1-3회)을 기준
 
+        // 5:2:3 이 적정 비율
         const totalCarbohydrate = Math.round(tdee * 0.5 / 4);
         const totalProtein = Math.round(tdee * 0.2 / 4);
         const totalFat = Math.round(tdee * 0.3 / 9);
@@ -139,14 +141,11 @@ export class NutrientsRetioServie {
 
         return macronutrientRatioResponseDTO;
     }
-
-    //섭취 부족과 충분 영양소 판단 --탄단지 별 많이 먹었는지 적게 먹었는지
     
-
-    
-    // async calculateMacronutrientRatioForWeek({ u_id, date } : { u_id: number, date : DietPlanRequestDTO }): Promise<> {
+    // async calculateMacronutrientRatioForWeek({ u_id, date } : { u_id: number, date : string }): Promise<> {
     //     // u_id에 따른 주간 권장 탄단지 비율 계산 로직
     //     //calculateMacronutrientRatioForDay 얘를 주회해야 하는 날짜만큼 돌린면 됨
+
     // }
     
 }

@@ -12,6 +12,14 @@ export default class DietPlanService {
     async findDietPlanByDateAndUid( { date, u_id } : { date : string, u_id : number }) : Promise<DietPlanResponseDTO> {
         const dietPlans : DietPlanDTO[] = await this.dietPlanRepository.findDietPlanByDateAndUid({date, u_id});
 
+        for(let i = 0; i < dietPlans.length; i++){
+            let date = new Date(dietPlans[i].date);  // 기존 날짜 가져오기
+            date.setDate(date.getDate() + 1);        // 날짜에 하루 더하기
+            let formattedDate = date.toISOString().split('T')[0];  // ISO 형식으로 변환 후 날짜 부분만 추출
+            dietPlans[i].date = formattedDate;       // 수정된 날짜로 설정
+
+        }
+
         //TODO : 조건문 사용해 값을 못 받아온 경우 처리하기
 
         const dietPlanResponseDTO : DietPlanResponseDTO = {

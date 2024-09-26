@@ -26,14 +26,14 @@ export class NutrientsRetioServie {
         let carbohydrate : number = 0;
         let protein : number = 0;
         let fat : number = 0;
+        let kcal : number = 0;
 
         for(const f_id of foodInfoIds){
             const foodInfo : FoodInfoDTO = await this.foodInfoRepository.findFoodInfoById({ f_id });
-            console.log(foodInfo);
-            const tmp = Number(foodInfo.carbohydrate);
-            carbohydrate += tmp
+            carbohydrate += Number(foodInfo.carbohydrate);
             protein += Number(foodInfo.protein);
             fat += Number(foodInfo.fat);
+            kcal += Number(foodInfo.kcal)
         }
 
         const total = carbohydrate + protein + fat;
@@ -42,7 +42,8 @@ export class NutrientsRetioServie {
             date : date ,
             carbohydrate : Math.round(carbohydrate / total * 100),
             protein : Math.round(protein / total * 100),
-            fat : Math.round(fat / total * 100)
+            fat : Math.round(fat / total * 100),
+            kcal : kcal
         };
 
         const macronutrientRatioResponseDTO : MacronutrientRatioResponseDTO = {

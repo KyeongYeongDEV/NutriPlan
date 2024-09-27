@@ -5,8 +5,9 @@ import NutrientsRetioController from "../controllers/nutrientsRetio.controller";
 export default ({ app } : { app : Router }) => {
     const route = Router();
 
-    app.use('/nutrientsRetio', route);
+    app.use('/macronutrientRatio', route);
 
-    route.get("/:u_id", Container.get(NutrientsRetioController).calculateMacronutrientRatioForDay.bind(NutrientsRetioController));route.get("/:u_id", Container.get(NutrientsRetioController).calculateMacronutrientRatioForDay.bind(NutrientsRetioController));
+    route.get("/day/:u_id", Container.get(NutrientsRetioController).calculateMacronutrientRatioForDay.bind(NutrientsRetioController));route.get("/:u_id", Container.get(NutrientsRetioController).calculateMacronutrientRatioForDay.bind(NutrientsRetioController));
+    route.get("/week/:u_id", Container.get(NutrientsRetioController).evaluateMacronutrientIntakeForWeek.bind(NutrientsRetioController));route.get("/:u_id", Container.get(NutrientsRetioController).calculateMacronutrientRatioForDay.bind(NutrientsRetioController));
     route.get("/evaluate/:u_id", Container.get(NutrientsRetioController).evaluateMacronutrientIntakeForDay.bind(NutrientsRetioController));
 }

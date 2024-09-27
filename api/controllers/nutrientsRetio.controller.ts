@@ -23,4 +23,11 @@ export default class NutrientsRetioController {
         const dailyMacronutrientSummary : DailyMacronutrientSummary = await this.nutrientsRetioServie.evaluateMacronutrientIntakeForDay({ u_id, date });
         return res.status(200).json(dailyMacronutrientSummary);
     }
+
+    evaluateMacronutrientIntakeForWeek = async (req : Request, res : Response, next : NextFunction) => {
+        const u_id : number = parseInt(req.params.u_id);
+        const date : string = req.body.date;
+        const re = await this.nutrientsRetioServie.calculateMacronutrientRatioForWeek({ u_id, date });
+        return res.status(200).json(re);
+    }
 }

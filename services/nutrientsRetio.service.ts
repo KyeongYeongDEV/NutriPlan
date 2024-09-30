@@ -4,10 +4,10 @@ import { MacronutrientRatioForDayResponseDTO, MacronutrientRatioForWeekResponseD
 import DietPlanRepository from "../repositorys/dietPlan.repository";
 import FoodInfoRepository from "../repositorys/foodInfo.repository";
 import DietplanDTO from "../dto/response/dietPlan";
-import { EachKcal, MacronutrientRatio, DailyMacronutrientSummary } from "../types/nutrient.type";
+import { EachKcal, MacronutrientRatio, DailyMacronutrientSummary, WeekMacronutrientSummary, DailyKcal } from "../types/nutrient.type";
 import UserRepository from "../repositorys/user.repository";
 import UserDTO from "../dto/response/user";
-import { resourceLimits } from "worker_threads";
+import { markAsUntransferable } from "worker_threads";
 
 @Service()
 export class NutrientsRetioServie {
@@ -168,42 +168,64 @@ export class NutrientsRetioServie {
         //calculateMacronutrientRatioForDay 얘를 주회해야 하는 날짜만큼 돌린면 됨
         const { startOfWeek, endOfWeek } = this.getWeekStartAndEnd({date});
         const macronutrients = [];
-        
+        const weekKcal : DailyKcal[] = [];
+        let cnt : number = 0;
 
         for(let i = new Date(startOfWeek); i <= new Date(endOfWeek); i.setDate(i.getDate() + 1)) {
             // 날짜별 작업 수행
             let date = i.toISOString().split('T')[0]
             let tmp = await this.calculateMacronutrientRatioForDay({u_id, date});
-            macronutrients.push(tmp);
+            macronutrients.push(tmp.data);
+
+
+            if (tmp && tmp.data) {
+                macronutrients.push(tmp.data);
+                
+                if (tmp.data.eachKcal && tmp.data.date) {
+                    weekKcal[cnt] = {
+                        date: tmp.data.date,
+                        intakeKcal: tmp.data.eachKcal.dinner + tmp.data.eachKcal.lunch + tmp.data.eachKcal.morning
+                    };
+                    cnt++;
+                }
+            }
         }
 
-        let result: DailyMacronutrientSummary = {
-            macronutrientRecommendation: {
-                carbohydrate: 0,
-                protein: 0,
-                fat: 0,
-            },
-            intakeMacronutrient: {
-                carbohydrate: 0,
-                protein: 0,
-                fat: 0,
-            },
-            result: {
-                carbohydrate: '',
-                protein: '',
-                fat: '',
-            },
-        };
-        for(const macronutrient of macronutrients) {
-            if (macronutrient.data?.macronutrient.carbohydrate === 0 || macronutrient.data?.macronutrient.carbohydrate === null) {
-                continue;
+        let carbohydrate : number = 0;
+        let  protein : number = 0;
+        let fat : number = 0;
+
+        for (let i = 0; i < macronutrients.length; i++) {
+            const nutrient = macronutrients[i];
+    
+            if (nutrient && nutrient.macronutrient) {
+                if (nutrient.macronutrient.carbohydrate !== undefined) {
+                    carbohydrate += nutrient.macronutrient.carbohydrate;
+                }
+                if (nutrient.macronutrient.protein !== undefined) {
+                    protein += nutrient.macronutrient.protein;
+                }
+                if (nutrient.macronutrient.fat !== undefined) {
+                    fat += nutrient.macronutrient.fat;
+                }
             }
-            result.intakeMacronutrient.carbohydrate = macronutrient.data?.macronutrient.carbohydrate;
-            
         }
+
+        let total = carbohydrate + protein + fat;
+
+        const weekMacronutrientSummary: WeekMacronutrientSummary = {
+            macronutrientRatio: {
+                carbohydrate: Math.round((carbohydrate / total) * 100), 
+                protein: Math.round((protein / total) * 100),           
+                fat: Math.round((fat / total) * 100),                 
+            },
+            kcal : weekKcal
+        };
         
-        console.log(result);
-        return result;
+
+        
+        console.log(weekMacronutrientSummary);
+        return weekMacronutrientSummary;
     }
     
 }

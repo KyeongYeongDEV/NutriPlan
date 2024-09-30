@@ -4,7 +4,7 @@ type EachKcal={
     dinner : number;
 }
 
-type MacronutrientRatio = {
+type MacronutrientType = {
     carbohydrate : number;
     protein : number;
     fat : number;
@@ -34,8 +34,8 @@ type DailyKcal = {
 }
 
 type WeekMacronutrientSummary = {
-    macronutrientRatio : MacronutrientRatio;
+    macronutrientRatio : MacronutrientType;
     kcal : DailyKcal[];
 }
 
-export {EachKcal, MacronutrientRatio, DailyMacronutrientSummary, WeekMacronutrientSummary, DailyKcal} ;
+export {EachKcal, MacronutrientType, DailyMacronutrientSummary, WeekMacronutrientSummary, DailyKcal} ;

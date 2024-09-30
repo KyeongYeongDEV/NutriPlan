@@ -1,13 +1,12 @@
 import { Inject, Service } from "typedi";
 import FoodInfoDTO from "../dto/response/foodInfo";
-import { MacronutrientRatioForDayResponseDTO, MacronutrientRatioForWeekResponseDTO, MacronutrientRatioResponseDTO } from "../dto/response/nutrientRatio"; 
+import {  MacronutrientRatioForDayResponseDTO, MacronutrientRatioForWeekResponseDTO, MacronutrientRatioResponseDTO } from "../dto/response/nutrientRatio"; 
 import DietPlanRepository from "../repositorys/dietPlan.repository";
 import FoodInfoRepository from "../repositorys/foodInfo.repository";
 import DietplanDTO from "../dto/response/dietPlan";
-import { EachKcal, MacronutrientRatio, DailyMacronutrientSummary, WeekMacronutrientSummary, DailyKcal } from "../types/nutrient.type";
+import { EachKcal, DailyMacronutrientSummary, WeekMacronutrientSummary, DailyKcal, MacronutrientType } from "../types/nutrient.type";
 import UserRepository from "../repositorys/user.repository";
 import UserDTO from "../dto/response/user";
-import { markAsUntransferable } from "worker_threads";
 
 @Service()
 export class NutrientsRetioServie {
@@ -53,7 +52,7 @@ export class NutrientsRetioServie {
         return result;
     }
 
-    private async Macronutrient({ dietPlan } : { dietPlan : DietplanDTO[] }) : Promise<MacronutrientRatio>{
+    private async Macronutrient({ dietPlan } : { dietPlan : DietplanDTO[] }) : Promise<MacronutrientType>{
         const foodInfoIds :  number[] = this.getFoodInfoIdsByUidAndDate({ dietPlan });
         let carbohydrate : number = 0;
         let protein : number = 0;
@@ -66,7 +65,7 @@ export class NutrientsRetioServie {
             fat += Number(foodInfo.fat);
         }
 
-        const result : MacronutrientRatio = {
+        const result : MacronutrientType = {
             carbohydrate : Math.round(carbohydrate),
             protein : Math.round(protein),
             fat : Math.round(fat),
@@ -78,7 +77,7 @@ export class NutrientsRetioServie {
     async evaluateMacronutrientIntakeForDay({ u_id, date } : { u_id : number, date : string}) : Promise<MacronutrientRatioForDayResponseDTO>{
         //섭취한 영양 + 유저의 기초대사량
         const dietPlan : DietplanDTO[]= await this.dietPlanRepository.findDietPlanByDateAndUid({date, u_id});
-        const macronutrient : MacronutrientRatio = await this.Macronutrient({ dietPlan })
+        const macronutrient : MacronutrientType = await this.Macronutrient({ dietPlan })
         const userInfo : UserDTO = await this.userRepository.getUserInfoByUid({u_id});
         const userBmr = userInfo.bmr;
         
@@ -111,6 +110,7 @@ export class NutrientsRetioServie {
             }
         }
 
+
         const macronutrientRatioForDayResponseDTO : MacronutrientRatioForDayResponseDTO  = {
             statusCode : 200,
             message : "계산을 완료했습니다",
@@ -120,20 +120,20 @@ export class NutrientsRetioServie {
         return macronutrientRatioForDayResponseDTO;
     }
     
-    async calculateMacronutrientRatioForDay({ u_id, date } : { u_id: number, date : string }): Promise<MacronutrientRatioForWeekResponseDTO> {
+    async calculateMacronutrientRatioForDay({ u_id, date } : { u_id: number, date : string }): Promise<MacronutrientRatioResponseDTO> {
         const dietPlan : DietplanDTO[]= await this.dietPlanRepository.findDietPlanByDateAndUid({date, u_id});
         
         const eachKcal : EachKcal = await this.getEachKcal({ dietPlan })
         const macronutrient =  await this.Macronutrient({ dietPlan } )
 
         const total = macronutrient.carbohydrate + macronutrient.protein + macronutrient.fat;
-        const macronutrientRatio : MacronutrientRatio = {
+        const macronutrientRatio : MacronutrientType = {
             carbohydrate : Math.round(macronutrient.carbohydrate / total * 100),
             protein : Math.round(macronutrient.protein / total * 100),
             fat : Math.round(macronutrient.fat / total * 100),
         };
 
-        const macronutrientRatioForWeekResponseDTO : MacronutrientRatioForWeekResponseDTO = {
+        const macronutrientRatioResponseDTO : MacronutrientRatioResponseDTO = {
             statusCode : 200,
             message : '계산을 완료했습니다',
             data : {
@@ -144,7 +144,7 @@ export class NutrientsRetioServie {
             }
         }
 
-        return macronutrientRatioForWeekResponseDTO;
+        return macronutrientRatioResponseDTO;
     }
 
     private getWeekStartAndEnd({ date } : { date: string }): { startOfWeek: string, endOfWeek: string } {
@@ -163,7 +163,7 @@ export class NutrientsRetioServie {
         };
     }
     
-    async calculateMacronutrientRatioForWeek({ u_id, date } : { u_id: number, date : string })  {
+    async calculateMacronutrientRatioForWeek({ u_id, date } : { u_id: number, date : string }) : Promise<MacronutrientRatioForWeekResponseDTO> {
         // u_id에 따른 주간 권장 탄단지 비율 계산 로직
         //calculateMacronutrientRatioForDay 얘를 주회해야 하는 날짜만큼 돌린면 됨
         const { startOfWeek, endOfWeek } = this.getWeekStartAndEnd({date});
@@ -222,10 +222,12 @@ export class NutrientsRetioServie {
             kcal : weekKcal
         };
         
+        const macronutrientRatioForWeekResponseDTO : MacronutrientRatioForWeekResponseDTO = {
+            statusCode: 200,
+            message : "계산을 완료했습니다",
+            data : weekMacronutrientSummary
+        }
 
-        
-        console.log(weekMacronutrientSummary);
-        return weekMacronutrientSummary;
+        return macronutrientRatioForWeekResponseDTO;
     }
-    
 }

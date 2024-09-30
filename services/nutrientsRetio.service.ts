@@ -1,12 +1,13 @@
 import { Inject, Service } from "typedi";
 import FoodInfoDTO from "../dto/response/foodInfo";
-import { MacronutrientRatioForWeekResponseDTO, MacronutrientRatioResponseDTO } from "../dto/response/nutrientRatio"; 
+import { MacronutrientRatioForDayResponseDTO, MacronutrientRatioForWeekResponseDTO, MacronutrientRatioResponseDTO } from "../dto/response/nutrientRatio"; 
 import DietPlanRepository from "../repositorys/dietPlan.repository";
 import FoodInfoRepository from "../repositorys/foodInfo.repository";
 import DietplanDTO from "../dto/response/dietPlan";
 import { EachKcal, MacronutrientRatio, DailyMacronutrientSummary } from "../types/nutrient.type";
 import UserRepository from "../repositorys/user.repository";
 import UserDTO from "../dto/response/user";
+import { resourceLimits } from "worker_threads";
 
 @Service()
 export class NutrientsRetioServie {
@@ -74,7 +75,7 @@ export class NutrientsRetioServie {
         return result;
     }
 
-    async evaluateMacronutrientIntakeForDay({ u_id, date } : { u_id : number, date : string}) : Promise<DailyMacronutrientSummary>{
+    async evaluateMacronutrientIntakeForDay({ u_id, date } : { u_id : number, date : string}) : Promise<MacronutrientRatioForDayResponseDTO>{
         //섭취한 영양 + 유저의 기초대사량
         const dietPlan : DietplanDTO[]= await this.dietPlanRepository.findDietPlanByDateAndUid({date, u_id});
         const macronutrient : MacronutrientRatio = await this.Macronutrient({ dietPlan })
@@ -110,7 +111,13 @@ export class NutrientsRetioServie {
             }
         }
 
-        return dailyMacronutrientSummary;
+        const macronutrientRatioForDayResponseDTO : MacronutrientRatioForDayResponseDTO  = {
+            statusCode : 200,
+            message : "계산을 완료했습니다",
+            data :  dailyMacronutrientSummary
+        }
+
+        return macronutrientRatioForDayResponseDTO;
     }
     
     async calculateMacronutrientRatioForDay({ u_id, date } : { u_id: number, date : string }): Promise<MacronutrientRatioForWeekResponseDTO> {
@@ -160,15 +167,42 @@ export class NutrientsRetioServie {
         // u_id에 따른 주간 권장 탄단지 비율 계산 로직
         //calculateMacronutrientRatioForDay 얘를 주회해야 하는 날짜만큼 돌린면 됨
         const { startOfWeek, endOfWeek } = this.getWeekStartAndEnd({date});
-        const result = [];
+        const macronutrients = [];
         
 
         for(let i = new Date(startOfWeek); i <= new Date(endOfWeek); i.setDate(i.getDate() + 1)) {
             // 날짜별 작업 수행
             let date = i.toISOString().split('T')[0]
             let tmp = await this.calculateMacronutrientRatioForDay({u_id, date});
-            result.push(tmp);
+            macronutrients.push(tmp);
         }
+
+        let result: DailyMacronutrientSummary = {
+            macronutrientRecommendation: {
+                carbohydrate: 0,
+                protein: 0,
+                fat: 0,
+            },
+            intakeMacronutrient: {
+                carbohydrate: 0,
+                protein: 0,
+                fat: 0,
+            },
+            result: {
+                carbohydrate: '',
+                protein: '',
+                fat: '',
+            },
+        };
+        for(const macronutrient of macronutrients) {
+            if (macronutrient.data?.macronutrient.carbohydrate === 0 || macronutrient.data?.macronutrient.carbohydrate === null) {
+                continue;
+            }
+            result.intakeMacronutrient.carbohydrate = macronutrient.data?.macronutrient.carbohydrate;
+            
+        }
+        
+        console.log(result);
         return result;
     }
     

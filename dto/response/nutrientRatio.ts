@@ -1,5 +1,5 @@
 import { CommonResponseDTO } from ".";
-import { EachKcal, MacronutrientRatio } from "../../types/nutrient.type";
+import { DailyMacronutrientSummary, EachKcal, MacronutrientRatio } from "../../types/nutrient.type";
 
 export interface MacronutrientRatioDTO { //탄단지 비율을 %로 해서 보냄
     date : string;
@@ -15,4 +15,5 @@ export interface MacronutrientRatioForWeekDTO {
 }
 
 export interface MacronutrientRatioResponseDTO extends CommonResponseDTO<MacronutrientRatioDTO>{}
+export interface MacronutrientRatioForDayResponseDTO extends CommonResponseDTO<DailyMacronutrientSummary>{}
 export interface MacronutrientRatioForWeekResponseDTO extends CommonResponseDTO<MacronutrientRatioForWeekDTO>{}

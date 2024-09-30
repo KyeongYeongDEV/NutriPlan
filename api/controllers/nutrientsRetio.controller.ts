@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Inject, Service } from "typedi";
-import { MacronutrientRatioResponseDTO } from "../../dto/response/nutrientRatio";
+import { MacronutrientRatioForDayResponseDTO, MacronutrientRatioResponseDTO } from "../../dto/response/nutrientRatio";
 import { NutrientsRetioServie } from "../../services/nutrientsRetio.service";
-import { DailyMacronutrientSummary } from "../../types/nutrient.type";
 
 @Service()
 export default class NutrientsRetioController {
@@ -20,8 +19,8 @@ export default class NutrientsRetioController {
     evaluateMacronutrientIntakeForDay = async (req : Request, res : Response, next : NextFunction) => {
         const u_id : number = parseInt(req.params.u_id);
         const date : string = req.body.date;
-        const dailyMacronutrientSummary : DailyMacronutrientSummary = await this.nutrientsRetioServie.evaluateMacronutrientIntakeForDay({ u_id, date });
-        return res.status(200).json(dailyMacronutrientSummary);
+        const macronutrientRatioForDayResponseDTO : MacronutrientRatioForDayResponseDTO = await this.nutrientsRetioServie.evaluateMacronutrientIntakeForDay({ u_id, date });
+        return res.status(200).json(macronutrientRatioForDayResponseDTO);
     }
 
     evaluateMacronutrientIntakeForWeek = async (req : Request, res : Response, next : NextFunction) => {

@@ -1,6 +1,6 @@
 import { Router } from "express"
 import Container from "typedi";
-import NutrientsRetioController from "../controllers/nutrientsRetio.controller";
+import NutrientsRetioController from "../controllers/nutrientsRatio.controller";
 
 export default ({ app } : { app : Router }) => {
     const route = Router();

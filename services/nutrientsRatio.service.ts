@@ -9,7 +9,7 @@ import UserRepository from "../repositorys/user.repository";
 import UserDTO from "../dto/response/user";
 
 @Service()
-export class NutrientsRetioServie {
+export class NutrientsRatioServie {
     constructor(
         @Inject( () => FoodInfoRepository ) private readonly foodInfoRepository : FoodInfoRepository,
         @Inject( () => DietPlanRepository ) private readonly dietPlanRepository : DietPlanRepository,

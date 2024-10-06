@@ -5,7 +5,7 @@ const doc = {
     title: "NutriPlan Express API",
     description: "Description",
   },
-  host: "localhost:8000/node",
+  host: "localhost:8080/node",
   schemes: ["http"],
   "x-cors": {
     enabled: true,

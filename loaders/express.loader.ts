@@ -3,7 +3,8 @@ import router from '../api/index.api';
 //import errorMiddleware from "../api/middlewares/error.middleware";
 import cors from "cors";
 import dotenv from "dotenv";
-
+import swaggerUi from 'swagger-ui-express';
+const swaggerDocument = require("../swagger-output.json");
 dotenv.config();
 
 export default async ({ app }: { app: Application }) => {
@@ -13,6 +14,8 @@ export default async ({ app }: { app: Application }) => {
     }));
     app.use(json());
     app.use(urlencoded({ extended: false }));
+
+    app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     
     app.use('/node', router());
 

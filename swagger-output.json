@@ -1,42 +1,278 @@
 {
-    "swagger": "2.0",
-    "info": {
+  "swagger": "2.0",
+  "info": {
     "title": "My API",
     "description": "Description",
     "version": "1.0.0"
-    },
-    "host": "localhost:8000/api",
-    "basePath": "/",
-    "schemes": [
+  },
+  "host": "localhost:8080",
+  "basePath": "/node",
+  "schemes": [
     "http"
-    ],
-    "paths": {
-    "/auth/join": {
-        "post": {
-        "description": "",
-        "responses": {
-            "200": {
-            "description": "OK"
-            },
-            "404": {
-            "description": "Not Found"
+  ],
+  "paths": {
+    "/dietPlan/{u_id}": {
+      "get": {
+        "tags": ["Diet Plan"],  
+        "summary": "Get diet plan by user ID and date",
+        "parameters": [
+          {
+            "name": "u_id",
+            "in": "path",
+            "description": "ID of the user (Explain : 4)",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "date",
+            "in": "body",
+            "description": "Date to retrieve diet plan",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "example": "2024-09-24"
+                }
+              }
             }
-        }
-        }
-    },
-    "/auth/login": {
-        "post": {
-        "description": "",
+          }
+        ],
         "responses": {
-            "default": {
-            "description": ""
+          "200": {
+            "description": "Successfully retrieved diet plan",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "성공적으로 조회했습니다"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 4
+                      },
+                      "user_id": {
+                        "type": "integer",
+                        "example": 4
+                      },
+                      "food_id": {
+                        "type": "integer",
+                        "example": 4
+                      },
+                      "date": {
+                        "type": "string",
+                        "example": "2024-09-24"
+                      },
+                      "mealTime": {
+                        "type": "integer",
+                        "example": 1
+                      }
+                    }
+                  },
+                  "example": [
+                    {
+                      "id": 4,
+                      "user_id": 4,
+                      "food_id": 4,
+                      "date": "2024-09-24",
+                      "mealTime": 1
+                    },
+                    {
+                      "id": 11,
+                      "user_id": 4,
+                      "food_id": 5,
+                      "date": "2024-09-24",
+                      "mealTime": 2
+                    }
+                  ]
+                }
+              }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
         }
-        }
-    }
+      }
     },
-    "x-cors": {
-    "enabled": true,
-    "description": "Cross-Origin Resource Sharing (CORS) is supported for this API."
+    "/dietPlan": {
+      "delete": {
+        "tags": ["Diet Plan"],  
+        "summary": "Delete diet plan by dietPlanID",
+        "parameters": [
+          {
+            "name": "dietPlanID",
+            "in": "body",
+            "description": "dietPlanID to delete diet plan",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "dietPlan_id": {
+                  "type": "integer",
+                  "example": 4
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully delete diet plan",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "삭제가 완료되었습니다."
+                },
+                "data": {
+
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+
+    "/foodInfo/{f_id}": {
+      "get": {
+        "tags": ["Food Info"],  
+        "summary": "Get food information by food ID",
+        "parameters": 
+          {
+            "name": "date",
+            "in": "body",
+            "description": "Date to retrieve diet plan",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "example": "2024-09-24"
+                }
+              }
+            }
+          },
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved diet plan",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "성공적으로 조회했습니다"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 4
+                    },
+                    "foodName": {
+                      "type": "string",
+                      "example": "삼겹살"
+                    },
+                    "kcal": {
+                      "type": "integer",
+                      "example": 250
+                    },
+                    "carbohydrate": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "protein": {
+                      "type": "integer",
+                      "example": 22
+                    },
+                    "fat": {
+                      "type": "integer",
+                      "example": 18
+                    },
+                    "category": {
+                      "type": "string",
+                      "example": "육류"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+
+    "/foodInfo": {
+      "delete": {
+        "tags": ["Food Info"],  
+        "summary": "Delete food information by food ID (얘는 안 쓸 듯)",
+        "parameters": 
+          {
+            "name": "f_id",
+            "in": "body",
+            "description": "ID of the food (Explain : 4)",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "properties": {
+                "f_id": {
+                  "type": "integer",
+                  "example": 4
+                }
+              }
+            }
+          },
+        "responses": {
+          "200": {
+            "description": "Successfully delete food information",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "삭제가 완료되었습니다"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
     }
+  }
 }

@@ -1,11 +1,11 @@
 import { Inject, Service } from "typedi";
 import FoodInfoDTO from "../dto/response/foodInfo";
 import {  MacronutrientRatioForDayResponseDTO, MacronutrientRatioForWeekResponseDTO, MacronutrientRatioResponseDTO } from "../dto/response/nutrientRatio"; 
-import DietPlanRepository from "../repositorys/dietPlan.repository";
-import FoodInfoRepository from "../repositorys/foodInfo.repository";
+import DietPlanRepository from "../repositoryes/dietPlan.repository";
+import FoodInfoRepository from "../repositoryes/foodInfo.repository";
 import DietplanDTO from "../dto/response/dietPlan";
 import { EachKcal, DailyMacronutrientSummary, WeekMacronutrientSummary, DailyKcal, MacronutrientType } from "../types/nutrient.type";
-import UserRepository from "../repositorys/user.repository";
+import UserRepository from "../repositoryes/user.repository";
 import UserDTO from "../dto/response/user";
 
 @Service()
@@ -16,9 +16,9 @@ export class NutrientsRatioServie {
         @Inject( () => UserRepository ) private readonly userRepository : UserRepository
     ){}
     //map으로 food_id만 뽑아주는 함수
-    private getFoodInfoIdsByUidAndDate({ dietPlan } : { dietPlan : DietplanDTO[] }): number[] {
+    private getFoodInfoIdsByUidAndDate({ dietPlan } : { dietPlan : DietplanDTO[] | null }): number[] {
         let foodIds : number[]= [];
-        if (dietPlan !== undefined) {// food_id 값만 추출하여 배열로 저장
+        if (dietPlan !== null) {// food_id 값만 추출하여 배열로 저장
             foodIds = dietPlan.map(item => item.food_id);
         }
 
@@ -58,6 +58,7 @@ export class NutrientsRatioServie {
         let protein : number = 0;
         let fat : number = 0;
 
+
         for(const f_id of foodInfoIds){
             const foodInfo : FoodInfoDTO = await this.foodInfoRepository.findFoodInfoById({ f_id });
             carbohydrate += Number(foodInfo.carbohydrate);
@@ -80,8 +81,11 @@ export class NutrientsRatioServie {
         const macronutrient : MacronutrientType = await this.Macronutrient({ dietPlan })
         const userInfo : UserDTO = await this.userRepository.getUserInfoByUid({u_id});
         const userBmr = userInfo.bmr;
+        const ACTIVITY_METABOLISM = 1.375
         
-        const tdee : number =  userBmr * 1.375; // 활동칼로리 - 가벼운 운동(주1-3회)을 기준
+
+        //TODO : 계산 같은 거는 함수로 뺴고 함수를 부르는 것이 가독성이 좋음 비즈니스 로직은 가독성이 중요
+        const tdee : number =  userBmr * ACTIVITY_METABOLISM; // 활동칼로리 - 가벼운 운동(주1-3회)을 기준
 
         // 5:2:3 이 적정 비율
         const totalCarbohydrate = Math.round(tdee * 0.5 / 4);
@@ -148,6 +152,7 @@ export class NutrientsRatioServie {
     }
 
     private getWeekStartAndEnd({ date } : { date: string }): { startOfWeek: string, endOfWeek: string } {
+        //TODO: new를 많이 부르는 거는 좋은 형태가 아님
         const givenDate = new Date(date);
         const startOfWeek = new Date(givenDate);
         const endOfWeek = new Date(givenDate);
@@ -177,7 +182,7 @@ export class NutrientsRatioServie {
             let tmp = await this.calculateMacronutrientRatioForDay({u_id, date});
             macronutrients.push(tmp.data);
 
-
+            //reduce나 map으로 해보기 
             if (tmp && tmp.data) {
                 macronutrients.push(tmp.data);
                 
@@ -212,7 +217,7 @@ export class NutrientsRatioServie {
         }
 
         let total = carbohydrate + protein + fat;
-
+        //TODO: 밖에서 계산하고 넣기
         const weekMacronutrientSummary: WeekMacronutrientSummary = {
             macronutrientRatio: {
                 carbohydrate: Math.round((carbohydrate / total) * 100), 

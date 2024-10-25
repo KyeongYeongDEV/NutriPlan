@@ -1,6 +1,6 @@
 import { Inject, Service } from "typedi";
 import FoodInfoDTO, { DeleteFoodInfoResponseDTO, FoodInfoResponseDTO } from "../dto/response/foodInfo";
-import FoodInfoRepository from "../repositorys/foodInfo.repository";
+import FoodInfoRepository from "../repositoryes/foodInfo.repository";
 
 
 @Service()

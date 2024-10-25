@@ -1,7 +1,7 @@
 import { Inject, Service } from "typedi";
 import { DeleteDietPlanResponseDTO, DietPlanResponseDTO } from "../dto/response/dietPlan";
 import DietPlanDTO from "../dto/response/dietPlan";
-import DietPlanRepository from "../repositorys/dietPlan.repository";
+import DietPlanRepository from "../repositoryes/dietPlan.repository";
 
 @Service()
 export default class DietPlanService {
@@ -12,6 +12,8 @@ export default class DietPlanService {
     async findDietPlanByDateAndUid( { date, u_id } : { date : string, u_id : number }) : Promise<DietPlanResponseDTO> {
         const dietPlans : DietPlanDTO[] = await this.dietPlanRepository.findDietPlanByDateAndUid({date, u_id});
 
+
+        //TODO : map으로 하면 깔끔함
         for(let i = 0; i < dietPlans.length; i++){
             let date = new Date(dietPlans[i].date);  // 기존 날짜 가져오기
             date.setDate(date.getDate() + 1);        // 날짜에 하루 더하기
